@@ -19,6 +19,7 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.ViewGroup;
 
 /**
  * A view container where OpenGL ES graphics can be drawn on screen.
@@ -28,6 +29,7 @@ import android.view.MotionEvent;
 public class MyGLSurfaceView extends GLSurfaceView {
 
     private final MyGLRenderer mRenderer;
+    int screenHeight;
 
     public MyGLSurfaceView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
@@ -45,41 +47,23 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
     private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
     private float mPreviousX;
-    private float mPreviousY;
+    private float mPreviousY = 0;
 
-    @Override
-    public boolean onTouchEvent(MotionEvent e) {
-        // MotionEvent reports input details from the touch screen
-        // and other input controls. In this case, you are only
-        // interested in events where the touch position changed.
+    // move red graphic based on TrackingService.shakeCounter
+    // absolute scale: 0 to 200
+    public boolean raiseGraphic(int shake) {
 
-        float x = e.getX();
-        float y = e.getY();
 
-        switch (e.getAction()) {
-            case MotionEvent.ACTION_MOVE:
+        float currentY = mPreviousY;
+        //float dy = currentY - mPreviousY;
 
-                float dx = x - mPreviousX;
-                float dy = y - mPreviousY;
 
-                // reverse direction of rotation above the mid-line
-                if (y > getHeight() / 2) {
-                    dx = dx * -1 ;
-                }
+        // change height based on shake amount
+        mRenderer.setHeight(mRenderer.getHeight() + shake);
+        requestRender();
 
-                // reverse direction of rotation to left of the mid-line
-                if (x < getWidth() / 2) {
-                    dy = dy * -1 ;
-                }
-
-                mRenderer.setAngle(
-                        mRenderer.getAngle() +
-                        ((dx + dy) * TOUCH_SCALE_FACTOR));  // = 180.0f / 320
-                requestRender();
-        }
-
-        mPreviousX = x;
-        mPreviousY = y;
+        //mPreviousX = x;
+        mPreviousY = currentY;
         return true;
     }
 

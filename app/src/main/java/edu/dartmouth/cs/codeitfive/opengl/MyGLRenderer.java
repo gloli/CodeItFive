@@ -18,10 +18,19 @@ package edu.dartmouth.cs.codeitfive.opengl;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.opengl.GLU;
+import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import android.util.Log;
+
+import edu.dartmouth.cs.codeitfive.Globals;
+import edu.dartmouth.cs.codeitfive.MainActivity;
+import edu.dartmouth.cs.codeitfive.R;
+import edu.dartmouth.cs.codeitfive.Wave;
 
 /**
  * Provides drawing instructions for a GLSurfaceView object. This class
@@ -42,61 +51,79 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private final float[] mViewMatrix = new float[16];
     private final float[] mRotationMatrix = new float[16];
 
-    private float mAngle;
+    private float mHeight;
+    private Wave background = new Wave();
+    private long loopStart = 0;
+    private long loopEnd = 0;
+    private long loopRunTime = 0;
 
     @Override
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
-
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+        // set image
+        background.loadTexture(unused, Globals.BACKGROUND, Globals.context);
+
+    }
+
+    public void DrawBackground(GL10 gl) {
+        gl.glMatrixMode(GL10.GL_MODELVIEW);
+        gl.glLoadIdentity();
+        gl.glPushMatrix();
+        //gl.glScalef(.15f, Globals.getProportionateHeight(0.15f), .15f);
+        //gl.glTranslatef(2.8f, 1f, 0f);
+        gl.glScalef(1f, 1f, 1f);
+        gl.glTranslatef(0f, 0f, 0f);
+
+
+        gl.glMatrixMode(GL10.GL_TEXTURE);
+        gl.glLoadIdentity();
+        gl.glTranslatef(0.0f, 0.0f, 0.0f);
+
+        background.draw(gl);
+        gl.glPopMatrix();
+
+        gl.glLoadIdentity();
 
     }
 
     @Override
     public void onDrawFrame(GL10 unused) {
-        float[] scratch = new float[16];
-
         // Draw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
         // Set the camera position (View matrix)
-        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+        //Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
 
-        // Calculate the projection and view transformation
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
-
-        // Draw square
-        //mSquare.draw(mMVPMatrix);
-
-        // Create a rotation for the triangle
-
-        // Use the following code to generate constant rotation.
-        // Leave this code out when using TouchEvents.
-        // long time = SystemClock.uptimeMillis() % 4000L;
-        // float angle = 0.090f * ((int) time);
-
-        Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, 1.0f);
-
-        // Combine the rotation matrix with the projection and camera view
-        // Note that the mMVPMatrix factor *must be first* in order
-        // for the matrix multiplication product to be correct.
-        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+        loopStart = System.currentTimeMillis();
 
         // Draw triangle
-        //mTriangle.draw(scratch);
+        DrawBackground(unused);
+        unused.glEnable(GL10.GL_BLEND);
+        unused.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+
     }
 
     @Override
     public void onSurfaceChanged(GL10 unused, int width, int height) {
+        Globals.GAME_SCREEN_WIDTH = width;
+        Globals.GAME_SCREEN_HEIGHT = height;
+
         // Adjust the viewport based on geometry changes,
         // such as screen rotation
         GLES20.glViewport(0, 0, width, height);
 
         float ratio = (float) width / height;
 
-        // this projection matrix is applied to object coordinates
-        // in the onDrawFrame() method
-        Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
+        // Put OpenGL to projectiong matrix to access glOrthof()
+        unused.glMatrixMode(GL10.GL_PROJECTION);
+
+        // Load current identity of OpenGL state
+        unused.glLoadIdentity();
+
+        // set orthogonal two dimensional rendering of scene
+        unused.glOrthof(0f, 1f, 0f, 1f, -1f, 1f);
 
     }
 
@@ -148,15 +175,17 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      *
      * @return - A float representing the rotation angle.
      */
-    public float getAngle() {
-        return mAngle;
+    public float getHeight() {
+        return mHeight;
     }
 
     /**
      * Sets the rotation angle of the triangle shape (mTriangle).
      */
-    public void setAngle(float angle) {
-        mAngle = angle;
+    public void setHeight(float height) {
+        mHeight = height;
     }
+
+
 
 }

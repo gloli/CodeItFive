@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -15,7 +17,9 @@ import android.os.RemoteException;
 import android.util.AttributeSet;
 import android.util.Xml;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -26,9 +30,14 @@ import edu.dartmouth.cs.codeitfive.opengl.MyGLRenderer;
 public class MainActivity extends Activity implements ServiceConnection {
   private Button startButton;
   private TextView counterView;
+    private TextView bestTime;
+    private String timer = "0:00:000";
   private Messenger mServiceMessenger = null;
   boolean mIsBound;
+
   MyGLSurfaceView surfaceView;
+    float screenHeight;
+    Bitmap bmap;
 
   private final Messenger mMessenger = new Messenger(
       new IncomingMessageHandler());
@@ -38,6 +47,7 @@ public class MainActivity extends Activity implements ServiceConnection {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    Globals.context = getApplicationContext();
 
 // set up xml in conjunction with GLSurfaceView
       XmlPullParser parser = this.getResources().getLayout(R.layout.activity_main);
@@ -46,8 +56,17 @@ public class MainActivity extends Activity implements ServiceConnection {
     setContentView(R.layout.activity_main);
 
 
+      // Get height of view
+//      ViewGroup.LayoutParams p = surfaceView.getLayoutParams();
+//      screenHeight = p.height;
+
     startButton = (Button) findViewById(R.id.startButton);
-    counterView = (TextView) findViewById(R.id.best_time);
+    bestTime = (TextView) findViewById(R.id.best_time);
+      bestTime.setText("Best Time:\n" + timer);
+      counterView = (TextView) findViewById(R.id.timer);
+      counterView.setText(timer);
+
+      bmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.coke_background);
 
     // TODO if we even see a start button. If not, we need to think of what to do...
     startButton.setOnClickListener(new View.OnClickListener() {
@@ -58,10 +77,8 @@ public class MainActivity extends Activity implements ServiceConnection {
     });
 
 
-    if (TrackingService.shakeCounter > 10000) {
-      doUnbindService();
-      stopService(new Intent(MainActivity.this, TrackingService.class));
-      // TODO show results
+    if (TrackingService.shakeCounter > 1000) {
+        counterView.setText(TrackingService.shakeCounter);
     }
   }
 
@@ -144,19 +161,29 @@ public class MainActivity extends Activity implements ServiceConnection {
     }
   }
 
+
   private class IncomingMessageHandler extends Handler {
     @Override
     public void handleMessage(Message msg) {
-      // TODO write this method to update the view
-      updateDrawing(TrackingService.shakeCounter);
-      counterView.setText("" + TrackingService.shakeCounter);
+        if (TrackingService.shakeCounter < Globals.SHAKE_MAX) {
+            surfaceView.raiseGraphic(TrackingService.shakeCounter);
 
+        }
+      else
+            stopTracking();
     }
   }
 
-  // TODO implement this method
-  public void updateDrawing(int shakeCount) {
 
+  // tracking complete
+  public void stopTracking() {
+    // stop service
+      doUnbindService();
+      stopService(new Intent(MainActivity.this, TrackingService.class));
+
+      // change view
+      ImageView image = (ImageView) findViewById(R.id.finalImageView);
+      image.setImageResource(R.drawable.open);
 
   }
 }

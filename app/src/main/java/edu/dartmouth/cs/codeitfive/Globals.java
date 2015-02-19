@@ -11,12 +11,19 @@ package edu.dartmouth.cs.codeitfive;
 // More on class on constants:
 // http://www.javapractices.com/topic/TopicAction.do?Id=2
 
+import android.content.Context;
+
 public abstract class Globals {
 
 	// Debugging tag
 	public static final String TAG = "CodeItFive";
-	
-	
+
+
+    public static Context context;
+
+    public static int GAME_SCREEN_WIDTH = 0;
+    public static int GAME_SCREEN_HEIGHT = 0;
+
 	public static final int ACCELEROMETER_BUFFER_CAPACITY = 2048;
 	public static final int ACCELEROMETER_BLOCK_CAPACITY = 64;
 	
@@ -25,6 +32,8 @@ public abstract class Globals {
 	public static final int SHAKE_ID_SOFT = 0;
   public static final int SHAKE_ID_NONE = 3;
 
+    public static final int SHAKE_MAX = 100;
+    public static int BACKGROUND = R.drawable.coke_background;
 
   public static final int SERVICE_TASK_TYPE_COLLECT = 0;
 	public static final int SERVICE_TASK_TYPE_CLASSIFY = 1;
@@ -43,7 +52,13 @@ public abstract class Globals {
 	public static final int FEATURE_SET_CAPACITY = 10000;
 	
 	public static final int NOTIFICATION_ID = 1;
-	
-	
-  
+
+
+    public static float getProportionateHeight(float width){
+
+        float ratio = (float)GAME_SCREEN_WIDTH/GAME_SCREEN_HEIGHT;
+        float height = ratio * width;
+        return height;
+    }
+
 }

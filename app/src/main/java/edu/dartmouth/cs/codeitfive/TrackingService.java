@@ -135,7 +135,7 @@ public class TrackingService extends Service implements
               Log.d("SHAKE MONITOR", "SHAKING SOFT");
               break;
             case Globals.SHAKE_ID_NONE:
-              shakeCounter = Math.max(0, shakeCounter - 5);
+              shakeCounter = Math.max(0, shakeCounter/2);
               Log.d("SHAKE MONITOR", "SHAKING NONE");
               break;
           }
