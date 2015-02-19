@@ -11,6 +11,14 @@
     <edu.dartmouth.cs.codeitfive.opengl.MyGLSurfaceView android:id="@+id/surfaceView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Exit"
+        android:id="@+id/exitButton"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/startButton" />
+
 <Button
     android:id="@+id/startButton"
     android:layout_width="wrap_content"
@@ -44,14 +52,14 @@
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
         android:src="@drawable/coke"
-        android:layout_marginTop="123dp"
         android:layout_centerInParent="true" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/finalImageView"
-        android:layout_alignParentStart="false" />
+        android:layout_alignParentStart="false"
+        android:layout_centerInParent="true" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -60,4 +68,14 @@
         android:src="@drawable/coke_background"
         android:visibility="invisible"
         android:layout_centerHorizontal="true" />
+
+    <Chronometer
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/chronometer"
+        android:visibility="gone"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+
 </RelativeLayout>

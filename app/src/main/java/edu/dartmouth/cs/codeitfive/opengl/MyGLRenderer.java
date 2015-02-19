@@ -20,6 +20,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
+import android.opengl.GLU;
 import android.util.Log;
 
 import edu.dartmouth.cs.codeitfive.Globals;
@@ -39,17 +40,22 @@ public class MyGLRenderer implements Renderer {
     private static final String TAG = "MyGLRenderer";
 
     private float mHeight;
-    private Wave background = new Wave();
+    private Wave background;
     private long loopStart = 0;
     private long loopEnd = 0;
     private long loopRunTime = 0;
 
+    public MyGLRenderer() {
+        this.background = new Wave();
+    }
+
     @Override
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         Log.d(TAG, "onSurfaceCreate()");
-        // Set the background frame color
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         unused.glEnable(GL10.GL_TEXTURE_2D);
+
+        // Set the background frame color
+        unused.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         unused.glClearDepthf(1.0f);
 
         // Text depthe of all objects on surface
@@ -59,16 +65,16 @@ public class MyGLRenderer implements Renderer {
         // Enable blend to create transperency
         unused.glEnable(GL10.GL_BLEND);
         unused.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+        unused.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
 
         // set image
-        background.loadTexture(unused, Globals.BACKGROUND, Globals.context);
+        background.loadTexture(unused, Globals.context);
     }
 
     public void DrawBackground(GL10 gl) {
         Log.d(TAG, "DrawBackground()");
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
-        gl.glPushMatrix();
         //gl.glScalef(.15f, Globals.getProportionateHeight(0.15f), .15f);
         //gl.glTranslatef(2.8f, 1f, 0f);
         //gl.glScalef(1f, 1f, 1f);
@@ -91,6 +97,8 @@ public class MyGLRenderer implements Renderer {
         Log.d(TAG, "onDrawFrame()");
         // Draw background color
         unused.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+        unused.glLoadIdentity();
+        unused.glTranslatef(0.0f, 0.0f, -5.0f);
 
         // Set the camera position (View matrix)
         //Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
@@ -98,32 +106,41 @@ public class MyGLRenderer implements Renderer {
         loopStart = System.currentTimeMillis();
 
         // Draw triangle
-        DrawBackground(unused);
-        unused.glEnable(GL10.GL_BLEND);
-        unused.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+        //DrawBackground(unused);
+        background.draw(unused);
+
+//        unused.glEnable(GL10.GL_BLEND);
+//        unused.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
     }
 
     @Override
     public void onSurfaceChanged(GL10 unused, int width, int height) {
         Log.d(TAG, "onSurfaceChange()");
+
+        if (height == 0)
+            height = 1;
         Globals.GAME_SCREEN_WIDTH = width;
         Globals.GAME_SCREEN_HEIGHT = height;
 
         // Adjust the viewport based on geometry changes,
         // such as screen rotation
-        //GLES20.glViewport(0, 0, width, height);
+        unused.glViewport(0, 0, width, height);
+        unused.glMatrixMode(GL10.GL_PROJECTION);
+        unused.glLoadIdentity();
 
-        float ratio = (float) width / height;
+        //Calculate The Aspect Ratio Of The Window
+        GLU.gluPerspective(unused, 45.0f, (float) width / (float) height, 0.1f, 100.0f);
+
 
         // Put OpenGL to projectiong matrix to access glOrthof()
-        unused.glMatrixMode(GL10.GL_PROJECTION);
+        unused.glMatrixMode(GL10.GL_MODELVIEW);
 
         // Load current identity of OpenGL state
         unused.glLoadIdentity();
 
         // set orthogonal two dimensional rendering of scene
-        unused.glOrthof(0f, 1f, 0f, 1f, -1f, 1f);
+        //unused.glOrthof(0f, 1f, 0f, 1f, -1f, 1f);
 
     }
 

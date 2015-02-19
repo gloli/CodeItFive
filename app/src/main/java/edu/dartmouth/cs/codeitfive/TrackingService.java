@@ -24,7 +24,7 @@ public class TrackingService extends Service implements
   public static final int MSG_REGISTER_CLIENT = 1;
   public static final int MSG_UNREGISTER_CLIENT = 2;
   public static final int MSG_SHAKE_UPDATED = 4;
-  public static int shakeCounter = 0;
+  public static int shakeCounter;
   private SensorManager mSensorManager;
   private Sensor mAccelerometer;
 
@@ -43,7 +43,7 @@ public class TrackingService extends Service implements
   public int onStartCommand(Intent intent, int flags, int startId) {
     startTime = System.currentTimeMillis();
     Log.d("STARTED", "STARTED");
-
+    shakeCounter = 0;
     startActivityUpdate();
     return START_STICKY; // Run until explicitly stopped.
   }
