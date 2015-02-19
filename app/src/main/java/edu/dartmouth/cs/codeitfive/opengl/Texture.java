@@ -26,10 +26,13 @@ public class Texture {
     private int[] textures = new int[1];
 
     private float vertices[] = {
-            -1.0f, -1.0f,  0.0f,        // V1 - bottom left
-            -1.0f,  1.0f,  0.0f,        // V2 - top left
-            1.0f, -1.0f,  0.0f,        // V3 - bottom right
-            1.0f,  1.0f,  0.0f         // V4 - top right
+            0.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 1.0f,
+            1.0f, 0.0f,
+
 
     };
 
@@ -105,25 +108,16 @@ public class Texture {
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
        // gl.glDisable(GL10.GL_CULL_FACE);
+
+        gl.glPopMatrix();
     }
 
     // load image and bind to surface
     // called in MyGLRenderer > onSurfaceCreated
     public void loadTexture(GL10 gl, Context context){
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), Globals.BACKGROUND);
-//        InputStream imagestream = context.getResources().openRawResource(texture);
-//        Bitmap bitmap = null;
-//        try {
-//            bitmap = BitmapFactory.decodeStream(imagestream);
-//        }catch(Exception e){
-//        }finally {
-//
-//            try {
-//                imagestream.close();
-//                imagestream = null;
-//            } catch (IOException e) {
-//            }
-//        }
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inScaled = false;
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), Globals.BACKGROUND, opts);
         // create texture pointer
         gl.glGenTextures(1, textures, 0);
 

@@ -16,9 +16,11 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Xml;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageView;
@@ -63,9 +65,9 @@ public class MainActivity extends Activity implements ServiceConnection {
       surfaceView = new MyGLSurfaceView(this, attributes);
     setContentView(R.layout.activity_main);
 
-      // Get height of view
-//      ViewGroup.LayoutParams p = surfaceView.getLayoutParams();
-//      screenHeight = p.height;
+      getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+      getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+      getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 
     startButton = (Button) findViewById(R.id.startButton);
       exitButton = (Button) findViewById(R.id.exitButton);

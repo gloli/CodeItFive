@@ -40,6 +40,7 @@ public class MyGLRenderer implements Renderer {
     private static final String TAG = "MyGLRenderer";
 
     private float mHeight;
+    private float mWidth;
     private Wave background;
     private long loopStart = 0;
     private long loopEnd = 0;
@@ -58,9 +59,10 @@ public class MyGLRenderer implements Renderer {
         unused.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         unused.glClearDepthf(1.0f);
 
-        // Text depthe of all objects on surface
-        unused.glEnable(GL10.GL_DEPTH_TEST);
-        unused.glDepthFunc(GL10.GL_LEQUAL);
+        unused.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+
+        // Enable texture coordinate arrays.
+        unused.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 
         // Enable blend to create transperency
         unused.glEnable(GL10.GL_BLEND);
@@ -100,17 +102,11 @@ public class MyGLRenderer implements Renderer {
         unused.glLoadIdentity();
         unused.glTranslatef(0.0f, 0.0f, -5.0f);
 
-        // Set the camera position (View matrix)
-        //Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
-
         loopStart = System.currentTimeMillis();
 
         // Draw triangle
         //DrawBackground(unused);
         background.draw(unused);
-
-//        unused.glEnable(GL10.GL_BLEND);
-//        unused.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
     }
 
@@ -121,7 +117,9 @@ public class MyGLRenderer implements Renderer {
         if (height == 0)
             height = 1;
         Globals.GAME_SCREEN_WIDTH = width;
+        mWidth = width;
         Globals.GAME_SCREEN_HEIGHT = height;
+        mHeight = height;
 
         // Adjust the viewport based on geometry changes,
         // such as screen rotation
@@ -143,6 +141,8 @@ public class MyGLRenderer implements Renderer {
         //unused.glOrthof(0f, 1f, 0f, 1f, -1f, 1f);
 
     }
+
+
 
     /**
      * Utility method for compiling a OpenGL shader.
@@ -202,7 +202,6 @@ public class MyGLRenderer implements Renderer {
     public void setHeight(float height) {
         mHeight = height;
     }
-
 
 
 }
