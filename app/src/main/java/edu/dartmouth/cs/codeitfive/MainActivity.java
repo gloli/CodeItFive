@@ -12,15 +12,23 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.util.AttributeSet;
+import android.util.Xml;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import org.xmlpull.v1.XmlPullParser;
+
+import edu.dartmouth.cs.codeitfive.opengl.MyGLSurfaceView;
+import edu.dartmouth.cs.codeitfive.opengl.MyGLRenderer;
 
 public class MainActivity extends Activity implements ServiceConnection {
   private Button startButton;
   private TextView counterView;
   private Messenger mServiceMessenger = null;
   boolean mIsBound;
+  MyGLSurfaceView surfaceView;
 
   private final Messenger mMessenger = new Messenger(
       new IncomingMessageHandler());
@@ -30,9 +38,16 @@ public class MainActivity extends Activity implements ServiceConnection {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+// set up xml in conjunction with GLSurfaceView
+      XmlPullParser parser = this.getResources().getLayout(R.layout.activity_main);
+      AttributeSet attributes = Xml.asAttributeSet(parser);
+      surfaceView = new MyGLSurfaceView(this, attributes);
     setContentView(R.layout.activity_main);
+
+
     startButton = (Button) findViewById(R.id.startButton);
-    counterView = (TextView) findViewById(R.id.shakeCounter);
+    counterView = (TextView) findViewById(R.id.best_time);
 
     // TODO if we even see a start button. If not, we need to think of what to do...
     startButton.setOnClickListener(new View.OnClickListener() {
