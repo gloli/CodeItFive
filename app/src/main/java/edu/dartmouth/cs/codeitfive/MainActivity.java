@@ -25,7 +25,6 @@ import android.widget.TextView;
 import org.xmlpull.v1.XmlPullParser;
 
 import edu.dartmouth.cs.codeitfive.opengl.MyGLSurfaceView;
-import edu.dartmouth.cs.codeitfive.opengl.MyGLRenderer;
 
 public class MainActivity extends Activity implements ServiceConnection {
   private Button startButton;
@@ -47,14 +46,14 @@ public class MainActivity extends Activity implements ServiceConnection {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    Globals.context = getApplicationContext();
+    Globals.context = this;
 
 // set up xml in conjunction with GLSurfaceView
       XmlPullParser parser = this.getResources().getLayout(R.layout.activity_main);
       AttributeSet attributes = Xml.asAttributeSet(parser);
       surfaceView = new MyGLSurfaceView(this, attributes);
     setContentView(R.layout.activity_main);
-
+//      setContentView(surfaceView);
 
       // Get height of view
 //      ViewGroup.LayoutParams p = surfaceView.getLayoutParams();
@@ -68,18 +67,12 @@ public class MainActivity extends Activity implements ServiceConnection {
 
       bmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.coke_background);
 
-    // TODO if we even see a start button. If not, we need to think of what to do...
     startButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
         startShakeSequence();
       }
     });
-
-
-    if (TrackingService.shakeCounter > 1000) {
-        counterView.setText(TrackingService.shakeCounter);
-    }
   }
 
   private void startShakeSequence() {

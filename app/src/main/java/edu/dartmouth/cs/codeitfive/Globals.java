@@ -12,6 +12,7 @@ package edu.dartmouth.cs.codeitfive;
 // http://www.javapractices.com/topic/TopicAction.do?Id=2
 
 import android.content.Context;
+import android.util.AttributeSet;
 
 public abstract class Globals {
 
@@ -20,6 +21,7 @@ public abstract class Globals {
 
 
     public static Context context;
+    public static AttributeSet attributes;
 
     public static int GAME_SCREEN_WIDTH = 0;
     public static int GAME_SCREEN_HEIGHT = 0;

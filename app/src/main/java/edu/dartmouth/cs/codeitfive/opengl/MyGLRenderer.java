@@ -18,18 +18,11 @@ package edu.dartmouth.cs.codeitfive.opengl;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
-import android.opengl.GLSurfaceView;
-import android.opengl.GLU;
-import android.opengl.GLUtils;
-import android.opengl.Matrix;
+import android.opengl.GLSurfaceView.Renderer;
 import android.util.Log;
 
 import edu.dartmouth.cs.codeitfive.Globals;
-import edu.dartmouth.cs.codeitfive.MainActivity;
-import edu.dartmouth.cs.codeitfive.R;
 import edu.dartmouth.cs.codeitfive.Wave;
 
 /**
@@ -41,15 +34,9 @@ import edu.dartmouth.cs.codeitfive.Wave;
  *   <li>{@link android.opengl.GLSurfaceView.Renderer#onSurfaceChanged}</li>
  * </ul>
  */
-public class MyGLRenderer implements GLSurfaceView.Renderer {
+public class MyGLRenderer implements Renderer {
 
     private static final String TAG = "MyGLRenderer";
-
-    // mMVPMatrix is an abbreviation for "Model View Projection Matrix"
-    private final float[] mMVPMatrix = new float[16];
-    private final float[] mProjectionMatrix = new float[16];
-    private final float[] mViewMatrix = new float[16];
-    private final float[] mRotationMatrix = new float[16];
 
     private float mHeight;
     private Wave background = new Wave();
@@ -59,27 +46,37 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
+        Log.d(TAG, "onSurfaceCreate()");
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        unused.glEnable(GL10.GL_TEXTURE_2D);
+        unused.glClearDepthf(1.0f);
+
+        // Text depthe of all objects on surface
+        unused.glEnable(GL10.GL_DEPTH_TEST);
+        unused.glDepthFunc(GL10.GL_LEQUAL);
+
+        // Enable blend to create transperency
+        unused.glEnable(GL10.GL_BLEND);
+        unused.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
         // set image
         background.loadTexture(unused, Globals.BACKGROUND, Globals.context);
-
     }
 
     public void DrawBackground(GL10 gl) {
+        Log.d(TAG, "DrawBackground()");
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
         gl.glPushMatrix();
         //gl.glScalef(.15f, Globals.getProportionateHeight(0.15f), .15f);
         //gl.glTranslatef(2.8f, 1f, 0f);
-        gl.glScalef(1f, 1f, 1f);
-        gl.glTranslatef(0f, 0f, 0f);
-
+        //gl.glScalef(1f, 1f, 1f);
+        gl.glTranslatef(0f, 1f, -1.0f);
 
         gl.glMatrixMode(GL10.GL_TEXTURE);
         gl.glLoadIdentity();
-        gl.glTranslatef(0.0f, 0.0f, 0.0f);
+        gl.glTranslatef(0.0f, 0.7f, -1.0f);
 
         background.draw(gl);
         gl.glPopMatrix();
@@ -88,10 +85,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     }
 
+
     @Override
     public void onDrawFrame(GL10 unused) {
+        Log.d(TAG, "onDrawFrame()");
         // Draw background color
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+        unused.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
         // Set the camera position (View matrix)
         //Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
@@ -107,12 +106,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 unused, int width, int height) {
+        Log.d(TAG, "onSurfaceChange()");
         Globals.GAME_SCREEN_WIDTH = width;
         Globals.GAME_SCREEN_HEIGHT = height;
 
         // Adjust the viewport based on geometry changes,
         // such as screen rotation
-        GLES20.glViewport(0, 0, width, height);
+        //GLES20.glViewport(0, 0, width, height);
 
         float ratio = (float) width / height;
 

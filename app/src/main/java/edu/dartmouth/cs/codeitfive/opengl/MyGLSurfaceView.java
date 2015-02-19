@@ -28,21 +28,19 @@ import android.view.ViewGroup;
  */
 public class MyGLSurfaceView extends GLSurfaceView {
 
-    private final MyGLRenderer mRenderer;
+    private MyGLRenderer mRenderer;
     int screenHeight;
 
     public MyGLSurfaceView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
-
-        // Create an OpenGL ES 2.0 context.
         setEGLContextClientVersion(2);
 
         // Set the Renderer for drawing on the GLSurfaceView
         mRenderer = new MyGLRenderer();
-        setRenderer(mRenderer);
+        this.setRenderer(mRenderer);
 
         // Render the view only when there is a change in the drawing data
-        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        //setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
     }
 
     private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
@@ -52,8 +50,6 @@ public class MyGLSurfaceView extends GLSurfaceView {
     // move red graphic based on TrackingService.shakeCounter
     // absolute scale: 0 to 200
     public boolean raiseGraphic(int shake) {
-
-
         float currentY = mPreviousY;
         //float dy = currentY - mPreviousY;
 
