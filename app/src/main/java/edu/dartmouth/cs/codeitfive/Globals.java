@@ -34,7 +34,7 @@ public abstract class Globals {
 	public static final int SHAKE_ID_SOFT = 0;
   public static final int SHAKE_ID_NONE = 3;
 
-    public static final int SHAKE_MAX = 100;
+    public static final int SHAKE_MAX = 80;
     public static int BACKGROUND = R.drawable.coke_background;
 
   public static final int SERVICE_TASK_TYPE_COLLECT = 0;

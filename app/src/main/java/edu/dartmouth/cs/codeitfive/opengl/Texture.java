@@ -26,12 +26,10 @@ public class Texture {
     private int[] textures = new int[1];
 
     private float vertices[] = {
-            0.0f, 0.0f,
-            0.0f, 1.0f,
-            1.0f, 0.0f,
-            0.0f, 1.0f,
-            1.0f, 1.0f,
-            1.0f, 0.0f,
+            0.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f
 
 
     };
@@ -52,6 +50,7 @@ public class Texture {
         texture = _texture;
 
         // 4 bytes per coordinate
+        //ByteBuffer byteBuf = ByteBuffer.allocateDirect(vertices.length * 4);
         ByteBuffer byteBuf = ByteBuffer.allocateDirect(vertices.length * 4);
         byteBuf.order(ByteOrder.nativeOrder());
 
@@ -71,14 +70,55 @@ public class Texture {
         texBuf.put(texture);
         texBuf.position(0);
 
-        indexBuf = ByteBuffer.allocateDirect(indices.length);
+        indexBuf = ByteBuffer.allocateDirect(indices.length * 4);
         indexBuf.put(indices);
         indexBuf.position(0);
     }
 
+    public void draw(GL10 gl){
+        gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0]);
+        gl.glFrontFace(GL10.GL_CCW);
+        gl.glEnable(GL10.GL_CULL_FACE);
+        gl.glCullFace(GL10.GL_BACK);
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertBuf);
+        gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, texBuf);
+        gl.glDrawElements(GL10.GL_TRIANGLES, indices.length,
+                GL10.GL_UNSIGNED_BYTE, indexBuf);
+        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+        gl.glDisable(GL10.GL_CULL_FACE);
+    }
+
+    public void loadTexture(GL10 gl,int texture, Context context){
+        InputStream imagestream = context.getResources().openRawResource(texture);
+        Bitmap bitmap = null;
+        try {
+            bitmap = BitmapFactory.decodeStream(imagestream);
+        }catch(Exception e){
+        }finally {
+
+            try {
+                imagestream.close();
+                imagestream = null;
+            } catch (IOException e) {
+            }
+        }
+        gl.glGenTextures(1, textures, 0);
+        gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0]);
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
+                GL10.GL_NEAREST);
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
+                GL10.GL_LINEAR);
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_REPEAT);
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_REPEAT);
+        GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
+        bitmap.recycle();
+    }
 
 
-
+/*
     public void draw(GL10 gl){
         gl.glPushMatrix();
         // bind to generated texture
@@ -100,9 +140,9 @@ public class Texture {
         gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, texBuf);
 
         // draw vertices
-//        gl.glDrawElements(GL10.GL_TRIANGLES, indices.length,
-//                GL10.GL_UNSIGNED_BYTE, indexBuf);
-        gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, vertices.length / 3);
+        gl.glDrawElements(GL10.GL_TRIANGLES, indices.length,
+                GL10.GL_UNSIGNED_BYTE, indexBuf);
+        //gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, vertices.length / 3);
 
         // disable client state
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
@@ -114,7 +154,7 @@ public class Texture {
 
     // load image and bind to surface
     // called in MyGLRenderer > onSurfaceCreated
-    public void loadTexture(GL10 gl, Context context){
+    public int loadTexture(GL10 gl, Context context){
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inScaled = false;
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), Globals.BACKGROUND, opts);
@@ -128,7 +168,7 @@ public class Texture {
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
                 GL10.GL_NEAREST);
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
-                GL10.GL_LINEAR);
+                GL10.GL_NEAREST);
 
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_REPEAT);
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_REPEAT);
@@ -136,6 +176,9 @@ public class Texture {
         // create 2D texture image from bitap
         GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
         bitmap.recycle();
+
+        return textures[0];
     }
+    */
 
 }

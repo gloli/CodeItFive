@@ -28,6 +28,9 @@ import android.widget.TextView;
 
 import org.xmlpull.v1.XmlPullParser;
 
+import edu.dartmouth.cs.codeitfive.opengl.GameRenderer;
+import edu.dartmouth.cs.codeitfive.opengl.GameView;
+import edu.dartmouth.cs.codeitfive.opengl.Global;
 import edu.dartmouth.cs.codeitfive.opengl.MyGLSurfaceView;
 
 public class MainActivity extends Activity implements ServiceConnection {
@@ -45,7 +48,8 @@ public class MainActivity extends Activity implements ServiceConnection {
   private Messenger mServiceMessenger = null;
   boolean mIsBound;
 
-  MyGLSurfaceView surfaceView;
+  //MyGLSurfaceView surfaceView;
+    GameView surfaceView;
     float screenHeight;
     Bitmap bmap;
 
@@ -58,12 +62,18 @@ public class MainActivity extends Activity implements ServiceConnection {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Globals.context = this;
+      Global.context = this;
 
 // set up xml in conjunction with GLSurfaceView
+      //surfaceView = new GameView(this);
+    setContentView(R.layout.activity_main);
+
       XmlPullParser parser = this.getResources().getLayout(R.layout.activity_main);
       AttributeSet attributes = Xml.asAttributeSet(parser);
-      surfaceView = new MyGLSurfaceView(this, attributes);
-    setContentView(R.layout.activity_main);
+     // surfaceView = (MyGLSurfaceView) findViewById(R.id.surfaceView);
+      //surfaceView = new MyGLSurfaceView(this, attributes);
+      surfaceView = (GameView) findViewById(R.id.surfaceView);
+      surfaceView = new GameView(this, attributes);
 
       getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
       getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -195,7 +205,7 @@ public class MainActivity extends Activity implements ServiceConnection {
     @Override
     public void handleMessage(Message msg) {
         if (TrackingService.shakeCounter < Globals.SHAKE_MAX) {
-            surfaceView.raiseGraphic(TrackingService.shakeCounter);
+            //surfaceView.raiseGraphic(TrackingService.shakeCounter);
 
         }
       else

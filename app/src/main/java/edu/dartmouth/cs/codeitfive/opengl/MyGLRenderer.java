@@ -21,6 +21,7 @@ import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.GLU;
+import android.provider.Settings;
 import android.util.Log;
 
 import edu.dartmouth.cs.codeitfive.Globals;
@@ -46,6 +47,8 @@ public class MyGLRenderer implements Renderer {
     private long loopEnd = 0;
     private long loopRunTime = 0;
 
+    private int textureHandle;
+
     public MyGLRenderer() {
         this.background = new Wave();
     }
@@ -70,21 +73,20 @@ public class MyGLRenderer implements Renderer {
         unused.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
 
         // set image
-        background.loadTexture(unused, Globals.context);
+        background.loadTexture(unused, Globals.BACKGROUND, Globals.context);
     }
 
     public void DrawBackground(GL10 gl) {
         Log.d(TAG, "DrawBackground()");
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
-        //gl.glScalef(.15f, Globals.getProportionateHeight(0.15f), .15f);
-        //gl.glTranslatef(2.8f, 1f, 0f);
-        //gl.glScalef(1f, 1f, 1f);
-        gl.glTranslatef(0f, 1f, -1.0f);
+        gl.glPushMatrix();
+        gl.glScalef(.15f, Globals.getProportionateHeight(0.15f), .15f);
+        gl.glTranslatef(2.8f, 1f, 0f);
 
         gl.glMatrixMode(GL10.GL_TEXTURE);
         gl.glLoadIdentity();
-        gl.glTranslatef(0.0f, 0.7f, -1.0f);
+        gl.glTranslatef(0.0f, 0.0f, 0.0f);
 
         background.draw(gl);
         gl.glPopMatrix();
@@ -104,9 +106,14 @@ public class MyGLRenderer implements Renderer {
 
         loopStart = System.currentTimeMillis();
 
-        // Draw triangle
-        //DrawBackground(unused);
-        background.draw(unused);
+        // Set the active texture unit to texture unit 0.
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+
+        // Bind the texture to this unit.
+        //GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
+        //background.draw(unused);
+        DrawBackground(unused);
+//        checkGlError("DrawBackground");
 
     }
 
