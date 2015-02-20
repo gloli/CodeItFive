@@ -1,4 +1,4 @@
-package edu.dartmouth.cs.codeitfive;
+package edu.dartmouth.cs.codeitfive.opengl;
 
 import android.content.Context;
 import edu.dartmouth.cs.codeitfive.opengl.Texture;

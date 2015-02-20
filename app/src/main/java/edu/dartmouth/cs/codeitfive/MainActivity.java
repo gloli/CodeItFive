@@ -27,7 +27,6 @@ import android.widget.TextView;
 import org.xmlpull.v1.XmlPullParser;
 
 import edu.dartmouth.cs.codeitfive.opengl.GameView;
-import edu.dartmouth.cs.codeitfive.opengl.Global;
 
 public class MainActivity extends Activity implements ServiceConnection {
   private Button startButton;
@@ -39,7 +38,6 @@ public class MainActivity extends Activity implements ServiceConnection {
 
     long best;
     long count;
-    long millis;
     Chronometer stopWatch;
 
   private Messenger mServiceMessenger = null;
@@ -59,16 +57,12 @@ public class MainActivity extends Activity implements ServiceConnection {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Globals.context = this;
-      Global.context = this;
+
 
 // set up xml in conjunction with GLSurfaceView
-      //surfaceView = new GameView(this);
     setContentView(R.layout.activity_main);
-
       XmlPullParser parser = this.getResources().getLayout(R.layout.activity_main);
       AttributeSet attributes = Xml.asAttributeSet(parser);
-     // surfaceView = (MyGLSurfaceView) findViewById(R.id.surfaceView);
-      //surfaceView = new MyGLSurfaceView(this, attributes);
       surfaceView = (GameView) findViewById(R.id.surfaceView);
       surfaceView = new GameView(this, attributes);
 
@@ -115,13 +109,12 @@ public class MainActivity extends Activity implements ServiceConnection {
         finalImage.setVisibility(View.INVISIBLE);
 
         stopWatch = (Chronometer) findViewById(R.id.chronometer);
-        final long start = SystemClock.uptimeMillis();
+        final long start = SystemClock.elapsedRealtime();
         stopWatch.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
             public void onChronometerTick(Chronometer chronometer) {
                 count = (SystemClock.elapsedRealtime() - chronometer.getBase()) / 1000;
-
-                timer = (count/60) + ":" + (count%60); //+ ":" + ((count%1000) / 100);
+                timer = (count/60) + ":" + (count%60);
                 counterView.setText(timer);
             }
         });

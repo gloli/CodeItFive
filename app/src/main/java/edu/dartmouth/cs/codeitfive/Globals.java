@@ -23,6 +23,7 @@ public abstract class Globals {
     public static Context context;
     public static AttributeSet attributes;
 
+    public static final int GAME_THREAD_FPS_SLEEP = (1000/60);
     public static int GAME_SCREEN_WIDTH = 0;
     public static int GAME_SCREEN_HEIGHT = 0;
 

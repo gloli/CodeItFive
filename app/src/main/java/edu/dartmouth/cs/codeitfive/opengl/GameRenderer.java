@@ -7,7 +7,6 @@ import javax.microedition.khronos.opengles.GL10;
 
 import edu.dartmouth.cs.codeitfive.Globals;
 import edu.dartmouth.cs.codeitfive.TrackingService;
-import edu.dartmouth.cs.codeitfive.Wave;
 
 public class GameRenderer implements Renderer {
 
@@ -23,8 +22,8 @@ public class GameRenderer implements Renderer {
 	public void onDrawFrame(GL10 gl) {
 		loopStart = System.currentTimeMillis();
 		try {
-			if (loopRunTime < Global.GAME_THREAD_FPS_SLEEP) {
-				Thread.sleep(Global.GAME_THREAD_FPS_SLEEP - loopRunTime);
+			if (loopRunTime < Globals.GAME_THREAD_FPS_SLEEP) {
+				Thread.sleep(Globals.GAME_THREAD_FPS_SLEEP - loopRunTime);
 			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -77,15 +76,15 @@ public class GameRenderer implements Renderer {
 		gl.glEnable(GL10.GL_BLEND);
 		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
-        background.loadTexture(gl, Global.BACKGROUND, Global.context);
+        background.loadTexture(gl, Globals.BACKGROUND, Globals.context);
 	}
 
 	@Override
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		
 		// Enable game screen width and height to access other functions and classes
-		Global.GAME_SCREEN_WIDTH = width;
-		Global.GAME_SCREEN_HEIGHT = height;
+		Globals.GAME_SCREEN_WIDTH = width;
+		Globals.GAME_SCREEN_HEIGHT = height;
 		
 		// set position and size of viewport 
 		gl.glViewport(0, 0, width, height);
