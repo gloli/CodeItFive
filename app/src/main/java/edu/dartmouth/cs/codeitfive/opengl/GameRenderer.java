@@ -5,16 +5,16 @@ import android.opengl.GLSurfaceView.Renderer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import edu.dartmouth.cs.codeitfive.Globals;
+import edu.dartmouth.cs.codeitfive.TrackingService;
 import edu.dartmouth.cs.codeitfive.Wave;
 
 public class GameRenderer implements Renderer {
 
-//	private TexRoad road = new TexRoad();
-//	private TexCar car = new TexCar();
-//	private TexController accelerator = new TexController();
-//	private TexController breaks = new TexController();
+    // start with bckgnd at bottom
     private Wave background = new Wave();
-	
+    private float bgOffset; //= -1.0f;
+
 	private long loopStart = 0;
 	private long loopEnd = 0;
 	private long loopRunTime = 0;
@@ -31,27 +31,25 @@ public class GameRenderer implements Renderer {
 			e.printStackTrace();
 		}
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		
-		DrawBackground(gl);
-//		DrawCar(gl);
-//		DrawAccel(gl);
-//		DrawBreaks(gl);
-		
+
+        MoveBackground();
+        DrawBackground(gl);
+
 		gl.glEnable(GL10.GL_BLEND);
 		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
 	
-	public void DrawBackground(GL10 gl){
+	private void DrawBackground(GL10 gl){
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
 		gl.glPushMatrix();
-		//gl.glScalef(1f, 1f, 1f);
-		//gl.glTranslatef(0f, 0f, 0f);
+		gl.glScalef(1f, 1f, 1f);
+		gl.glTranslatef(0f, bgOffset, 0f);
 
 		gl.glMatrixMode(GL10.GL_TEXTURE);
 		gl.glLoadIdentity();
-		//gl.glTranslatef(0.0f, 0.7f, 0.0f);
+		//gl.glTranslatef(0.0f, 0.0f, 0.0f);
 
 		background.draw(gl);
 		gl.glPopMatrix();
@@ -59,7 +57,12 @@ public class GameRenderer implements Renderer {
 		gl.glLoadIdentity();
 	}
 
-	
+    // move graphic based on counter and max capacity
+	public void MoveBackground() {
+        float amount = (TrackingService.shakeCounter / Globals.SHAKE_MAX);
+        bgOffset = amount - 1.0f;
+    }
+
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		// Enable 2D maping capability

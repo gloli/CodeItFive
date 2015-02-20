@@ -73,10 +73,12 @@ public class TrackingService extends Service implements
 
   // =================== Message Handling Functions ===================
 
-  private void sendMessageToMainActivity() {
+  private void sendMessageToMainActivity(int classification) {
     if (mClient != null) {
       try {
-        Message msg = Message.obtain(null, MSG_SHAKE_UPDATED);
+//        Message msg = Message.obtain(null, MSG_SHAKE_UPDATED, 0);
+          Message msg = Message.obtain(null, classification);
+
         mClient.send(msg);
       } catch (RemoteException e) {
         // The client is dead.
@@ -141,7 +143,7 @@ public class TrackingService extends Service implements
           }
           // have a decay function;
 
-          sendMessageToMainActivity();
+          sendMessageToMainActivity((int) classification);
         } catch (Exception e) {
           // fail quietly
         }

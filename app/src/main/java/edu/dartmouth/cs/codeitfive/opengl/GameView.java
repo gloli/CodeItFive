@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 
 public class GameView extends GLSurfaceView {
 
-	private GameRenderer renderer;
+	public GameRenderer renderer;
 	
 	public GameView(Context context, AttributeSet attributeSet) {
 		super(context, attributeSet);

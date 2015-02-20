@@ -28,32 +28,15 @@ public abstract class Globals {
 
 	public static final int ACCELEROMETER_BUFFER_CAPACITY = 2048;
 	public static final int ACCELEROMETER_BLOCK_CAPACITY = 64;
-	
-	public static final int SHAKE_ID_HARD = 2;
-	public static final int SHAKE_ID_MODERATE = 1;
-	public static final int SHAKE_ID_SOFT = 0;
-  public static final int SHAKE_ID_NONE = 3;
 
-    public static final int SHAKE_MAX = 80;
+    public static int SHAKE_ACTION = 0;
+    public static final int SHAKE_ID_SOFT = 0;
+    public static final int SHAKE_ID_MODERATE = 1;
+    public static final int SHAKE_ID_HARD = 2;
+    public static final int SHAKE_ID_NONE = 3;
+
+    public static final float SHAKE_MAX = 100.0f;
     public static int BACKGROUND = R.drawable.coke_background;
-
-  public static final int SERVICE_TASK_TYPE_COLLECT = 0;
-	public static final int SERVICE_TASK_TYPE_CLASSIFY = 1;
-
-	public static final String CLASS_LABEL_KEY = "label";	
-	public static final String CLASS_LABEL_HARD = "hard";
-	public static final String CLASS_LABEL_MODERATE = "moderate";
-	public static final String CLASS_LABEL_SOFT = "soft";
-
-	public static final String FEAT_FFT_COEF_LABEL = "fft_coef_";
-	public static final String FEAT_MAX_LABEL = "max";
-	public static final String FEAT_SET_NAME = "accelerometer_features";
-
-	public static final String FEATURE_FILE_NAME = "features.arff";
-	public static final String RAW_DATA_NAME = "raw_data.txt";
-	public static final int FEATURE_SET_CAPACITY = 10000;
-	
-	public static final int NOTIFICATION_ID = 1;
 
 
     public static float getProportionateHeight(float width){

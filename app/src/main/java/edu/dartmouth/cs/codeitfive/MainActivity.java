@@ -16,10 +16,8 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Xml;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
@@ -28,10 +26,8 @@ import android.widget.TextView;
 
 import org.xmlpull.v1.XmlPullParser;
 
-import edu.dartmouth.cs.codeitfive.opengl.GameRenderer;
 import edu.dartmouth.cs.codeitfive.opengl.GameView;
 import edu.dartmouth.cs.codeitfive.opengl.Global;
-import edu.dartmouth.cs.codeitfive.opengl.MyGLSurfaceView;
 
 public class MainActivity extends Activity implements ServiceConnection {
   private Button startButton;
@@ -43,6 +39,7 @@ public class MainActivity extends Activity implements ServiceConnection {
 
     long best;
     long count;
+    long millis;
     Chronometer stopWatch;
 
   private Messenger mServiceMessenger = null;
@@ -118,12 +115,12 @@ public class MainActivity extends Activity implements ServiceConnection {
         finalImage.setVisibility(View.INVISIBLE);
 
         stopWatch = (Chronometer) findViewById(R.id.chronometer);
-        final long start = SystemClock.elapsedRealtime();
-
+        final long start = SystemClock.uptimeMillis();
         stopWatch.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
             public void onChronometerTick(Chronometer chronometer) {
                 count = (SystemClock.elapsedRealtime() - chronometer.getBase()) / 1000;
+
                 timer = (count/60) + ":" + (count%60); //+ ":" + ((count%1000) / 100);
                 counterView.setText(timer);
             }
@@ -205,8 +202,9 @@ public class MainActivity extends Activity implements ServiceConnection {
     @Override
     public void handleMessage(Message msg) {
         if (TrackingService.shakeCounter < Globals.SHAKE_MAX) {
+            //surfaceView.renderer.MoveBackground((float) TrackingService.shakeCounter);
             //surfaceView.raiseGraphic(TrackingService.shakeCounter);
-
+            Globals.SHAKE_ACTION = msg.what;
         }
       else
             stopTracking();
